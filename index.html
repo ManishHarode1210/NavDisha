@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NavDisha - Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans antialiased">
+
+    <!-- Loader -->
+    <div id="loader" class="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-500"></div>
+    </div>
+    
+    <!-- Main App Content (Initially hidden) -->
+    <div id="main-app" class="hidden">
+        <!-- Header -->
+        <header class="bg-gray-800 shadow-lg sticky top-0 z-40">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold text-white">Nav<span class="text-cyan-400">Disha</span></a>
+                <!-- This is the section you asked about for DESKTOP view -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-300 hover:text-cyan-400 transition">Home</a>
+                    <a href="dashboard.html" class="text-gray-300 hover:text-cyan-400 transition">Dashboard</a>
+                    <!-- NEW BUTTONS ADDED HERE -->
+                    <a href="#" class="text-gray-300 hover:text-cyan-400 transition">Settings</a>
+                    <a href="#" class="text-gray-300 hover:text-cyan-400 transition">About Us</a>
+                    <a href="#" id="logout-btn-desktop" class="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">Logout</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-300 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main content: Books and Solutions -->
+        <main class="container mx-auto px-6 py-12">
+            <!-- Book Showcase -->
+            <section id="books-section">
+                <h2 class="text-3xl font-bold text-center mb-8">Featured Books & Solutions</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Book Card 1 -->
+                    <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                        <img src="https://placehold.co/600x400/1a202c/76e6d3?text=Book+Cover" alt="Book Cover" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">Advanced JavaScript</h3>
+                            <p class="text-gray-400 mb-4">Master modern JS concepts, from closures to async/await.</p>
+                            <button class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">View Solutions</button>
+                        </div>
+                    </div>
+                    <!-- Book Card 2 -->
+                    <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                        <img src="https://placehold.co/600x400/1a202c/76e6d3?text=Book+Cover" alt="Book Cover" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">CSS Grid & Flexbox</h3>
+                            <p class="text-gray-400 mb-4">Build complex, responsive layouts with ease.</p>
+                            <button class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">View Solutions</button>
+                        </div>
+                    </div>
+                    <!-- Book Card 3 -->
+                    <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                        <img src="https://placehold.co/600x400/1a202c/76e6d3?text=Book+Cover" alt="Book Cover" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">React Deep Dive</h3>
+                            <p class="text-gray-400 mb-4">Understand the core principles of React for scalable apps.</p>
+                            <button class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">View Solutions</button>
+                        </div>
+                    </div>
+                </div>
+                <section class="mt-16 container mx-auto px-6 mb-12">
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-bold text-white">Shared Notes & PDFs</h2>
+        <span class="text-xs text-gray-400 bg-gray-800 px-3 py-1 rounded-full border border-gray-700">Live</span>
+    </div>
+
+    <div id="public-resources-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="col-span-full text-center py-12 bg-gray-800 rounded-lg border border-dashed border-gray-700">
+            <p class="text-gray-400">Loading resources...</p>
+        </div>
+    </div>
+</section>
+            </section>
+            <!-- Comment Section -->
+            <section id="comments-section" class="mt-16">
+                <h2 class="text-3xl font-bold text-center mb-8">Community Discussion</h2>
+                <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-3xl mx-auto">
+                    <!-- Messages will be dynamically inserted here -->
+                    <div id="messages-container" class="space-y-4 mb-6 h-80 overflow-y-auto p-4 rounded-lg bg-gray-900">
+                        <!-- Chat messages appear here -->
+                    </div>
+                    <form id="comment-form" class="flex space-x-4">
+                        <input id="message-input" type="text" placeholder="Type your message..." class="flex-grow bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500" required>
+                        <button id="send-button" type="submit" class="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">Send</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Authentication Page (Initially visible if not logged in) -->
+    <div id="auth-page" class="min-h-screen flex items-center justify-center">
+        <div class="max-w-md w-full p-8 space-y-8 bg-gray-800 rounded-2xl shadow-xl">
+            <!-- Login Form -->
+            <form id="login-form">
+                <h2 class="text-3xl font-bold text-center text-white">Welcome Back</h2>
+                <p class="text-center text-gray-400 mb-8">Login to continue to NavDisha</p>
+                <div id="login-error" class="hidden bg-red-800 border border-red-600 text-red-200 px-4 py-3 rounded-lg mb-4"></div>
+                <div class="space-y-6">
+                    <div>
+                        <input id="login-email" type="email" placeholder="Email Address" required class="w-full bg-gray-700 border border-gray-600 text-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                    </div>
+                   <div class="relative">
+    <input 
+        id="login-password" 
+        type="password" 
+        placeholder="Password" 
+        required 
+        class="w-full bg-gray-700 border border-gray-600 text-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-12"
+    >
+    <button 
+        type="button" 
+        id="toggle-login-password"
+        class="absolute inset-y-0 right-0 flex items-center px-4 text-gray-400 hover:text-cyan-400 focus:outline-none"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+    </button>
+</div>
+<!-- Forgot password button-->
+<div class="flex justify-end mb-4">
+    <a href="#" id="show-reset-from-login" class="text-sm text-cyan-400 hover:text-cyan-300 hover:underline mt-1">Forgot Password?</a>
+</div>
+                </div>
+                <button type="submit" class="w-full mt-8 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105">Login</button>
+                <p class="mt-6 text-center text-gray-400">
+                    Don't have an account? <a href="#" id="show-signup" class="font-semibold text-cyan-400 hover:text-cyan-300">Sign Up</a>
+                </p>
+
+            </form>
+            <!-- Signup Form (Initially hidden) -->
+            <form id="signup-form" class="hidden">
+                 <h2 class="text-3xl font-bold text-center text-white">Create Account</h2>
+                <p class="text-center text-gray-400 mb-8">Join the NavDisha community</p>
+                <div id="signup-error" class="hidden bg-red-800 border border-red-600 text-red-200 px-4 py-3 rounded-lg mb-4"></div>
+                <div class="space-y-6">
+                    <div>
+                        <input id="signup-name" type="text" placeholder="Full Name" required class="w-full bg-gray-700 border border-gray-600 text-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                    </div>
+                    <div>
+                        <input id="signup-email" type="email" placeholder="Email Address" required class="w-full bg-gray-700 border border-gray-600 text-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                    </div>
+                   <div class="relative">
+    <input 
+        id="signup-password" 
+        type="password" 
+        placeholder="Password" 
+        required 
+        class="w-full bg-gray-700 border border-gray-600 text-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-12"
+    >
+    <button 
+        type="button" 
+        id="toggle-signup-password"
+        class="absolute inset-y-0 right-0 flex items-center px-4 text-gray-400 hover:text-cyan-400 focus:outline-none"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+    </button>
+</div>
+<!-- Forgot password button-->
+ <div class="flex justify-end mb-4">
+    <a href="#" id="show-reset-from-signup" class="text-sm text-cyan-400 hover:text-cyan-300 hover:underline mt-1">Forgot Password?</a>
+</div>
+
+                </div>
+                <button type="submit" class="w-full mt-8 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105">Sign Up</button>
+                <p class="mt-6 text-center text-gray-400">
+                    Already have an account? <a href="#" id="show-login" class="font-semibold text-cyan-400 hover:text-cyan-300">Login</a>
+                </p>
+            </form>
+
+            <!-- Password Reset Form (Initially hidden) -->
+            <form id="reset-form" class="hidden">
+    <h2 class="text-3xl font-bold text-center text-white">Reset Password</h2>
+    <p class="text-center text-gray-400 mb-8">Enter your email to receive reset instructions</p>
+    
+    <div id="reset-message" class="hidden bg-green-800 border border-green-600 text-green-200 px-4 py-3 rounded-lg mb-4"></div>
+    <div id="reset-error" class="hidden bg-red-800 border border-red-600 text-red-200 px-4 py-3 rounded-lg mb-4"></div>
+
+    <div class="space-y-6">
+        <div>
+            <input id="reset-email" type="email" placeholder="Enter your registered email" required class="w-full bg-gray-700 border border-gray-600 text-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+        </div>
+    </div>
+    
+    <button type="submit" class="w-full mt-8 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105">Send Reset Link</button>
+    
+    <p class="mt-6 text-center text-gray-400">
+        Remembered it? <a href="#" id="cancel-reset" class="font-semibold text-cyan-400 hover:text-cyan-300">Back to Login</a>
+    </p>
+</form>
+        </div>
+    </div> 
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="nav-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+    <div id="nav-drawer" class="fixed top-0 left-0 h-full w-64 bg-gray-800 shadow-lg z-50 p-6">
+        <h2 class="text-2xl font-bold mb-8">Nav<span class="text-cyan-400">Disha</span></h2>
+        <!-- This is the section you asked about for MOBILE view -->
+        <nav class="flex flex-col space-y-4">
+            <a href="index.html" class="text-gray-300 hover:text-cyan-400 transition">Home</a>
+            <a href="dashboard.html" class="text-gray-300 hover:text-cyan-400 transition">Dashboard</a>
+            <!-- NEW BUTTONS ADDED HERE -->
+            <a href="#" class="text-gray-300 hover:text-cyan-400 transition">Settings</a>
+            <a href="#" class="text-gray-300 hover:text-cyan-400 transition">About Us</a>
+            <a href="#" id="logout-btn" class="text-gray-300 hover:text-cyan-400 transition">Logout</a>
+        </nav>
+    </div>
+
+    <!-- SCRIPT TAGS MOVED TO THE END OF THE BODY -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
+</body>
+</html>
+
