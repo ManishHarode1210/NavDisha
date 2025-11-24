@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -132,3 +133,139 @@
 </body>
 </html>
 
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NavDisha - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans antialiased">
+
+    <!-- Loader -->
+    <div id="loader" class="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-500"></div>
+    </div>
+
+    <div id="main-app" class="hidden">
+        <!-- Header -->
+        <header class="bg-gray-800 shadow-lg sticky top-0 z-40">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold text-white">Nav<span class="text-cyan-400">Disha</span></a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-300 hover:text-cyan-400 transition">Home</a>
+                    <a href="dashboard.html" class="text-gray-300 hover:text-cyan-400 transition">Dashboard</a>
+                    <a href="#" class="text-gray-300 hover:text-cyan-400 transition">Courses</a>
+                    <a href="#" class="text-gray-300 hover:text-cyan-400 transition">Profile</a>
+                    <a href="#" id="logout-btn-desktop" class="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition">Logout</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-300 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </nav> 
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <main class="container mx-auto px-6 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+    
+    <h1 id="welcome-message" class="text-3xl md:text-4xl font-bold text-white">
+        Welcome back!
+    </h1>
+
+    <div class="flex items-center gap-3">
+        <input type="file" id="hero-file-input" class="hidden">
+        
+        <span id="hero-upload-status" class="text-sm font-medium text-gray-400 animate-pulse hidden">
+            Uploading...
+        </span>
+
+        <button id="hero-upload-btn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            <span>Upload</span>
+        </button>
+    </div>
+
+</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Attendance Card -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Attendance</h3>
+                    <div class="w-full bg-gray-700 rounded-full h-4 mb-2">
+                        <div id="attendance-bar" class="bg-cyan-500 h-4 rounded-full" style="width: 0%;"></div>
+                    </div>
+                    <p id="attendance-text" class="text-right text-sm font-medium">0% Present</p>
+                </div>
+                <!-- Rating Card -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-2 text-cyan-400">Student Rating</h3>
+                    <div class="flex items-center">
+                        <div id="rating-stars" class="text-2xl">
+                            <!-- Stars will be inserted by JS -->
+                        </div>
+                        <p id="rating-text" class="ml-4 text-xl font-bold">0.0 / 5.0</p>
+                    </div>
+                </div>
+                <!-- Courses Learned Card -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-2 text-cyan-400">Courses Learned</h3>
+                    <p id="courses-learned-count" class="text-3xl font-bold">0</p>
+                </div>
+                <!-- Courses In Progress Card -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-2 text-cyan-400">Courses Continue</h3>
+                    <p id="courses-in-progress-count" class="text-3xl font-bold">0</p>
+                </div>
+                
+                <!-- Questions Asked Section (Updated) -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-2 text-cyan-400">Chat history</h3>
+                    <p class="text-3xl font-bold mb-4" id="questions-asked-count">0</p>
+                    <ul id="questions-history-list" class="space-y-2 text-sm text-gray-300 h-32 overflow-y-auto pr-2">
+                        <!-- Questions will be dynamically inserted here -->
+                    </ul>
+                </div>
+
+                <!-- History Card -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md md:col-span-2 lg:col-span-1">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Activity History</h3>
+                    <ul id="history-list" class="space-y-2 text-sm text-gray-400 list-disc list-inside">
+                        <!-- History items will be inserted by JS -->
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="nav-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+    <div id="nav-drawer" class="fixed top-0 left-0 h-full w-64 bg-gray-800 shadow-lg z-50 p-6">
+        <h2 class="text-2xl font-bold mb-8">Nav<span class="text-cyan-400">Disha</span></h2>
+        <nav class="flex flex-col space-y-4">
+            <a href="index.html" class="text-gray-300 hover:text-cyan-400 transition">Home</a>
+            <a href="dashboard.html" class="text-gray-300 hover:text-cyan-400 transition">Dashboard</a>
+            <a href="#" class="text-gray-300 hover:text-cyan-400 transition">Courses</a>
+            <a href="#" class="text-gray-300 hover:text-cyan-400 transition">Profile</a>
+            <a href="#" id="logout-btn" class="text-gray-300 hover:text-cyan-400 transition">Logout</a>
+        </nav>
+    </div>
+    
+    <!-- SCRIPT TAGS MOVED TO THE END OF THE BODY -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+>>>>>>> 98ad196 (Second commit - NavDisha)
