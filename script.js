@@ -329,6 +329,7 @@ const displayAiSuggestion = (question, messageId) => {
             if (currentPath.includes('dashboard.html')) {
                 const docSnap = await db.collection('users').doc(user.uid).get();
                 if (docSnap.exists) populateDashboard(docSnap.data());
+                loadUserUploads(user.uid);
                 if (mainApp) mainApp.classList.remove('hidden');
             } else {
                 if (mainApp) mainApp.classList.remove('hidden');
@@ -823,8 +824,7 @@ const triggerAiResponse = (text) => generateAiResponse(text, false);
                 heroBtn.disabled = false;
                 heroBtn.classList.remove('opacity-50');
             }
-        // });
-    
+     
 
             // --- FORCE DISPLAY RESOURCES (Place this at the bottom of script.js) ---
     const publicListContainer = document.getElementById('public-resources-list');
@@ -871,6 +871,8 @@ const triggerAiResponse = (text) => generateAiResponse(text, false);
     }
 
 
+
+  
 
     
         });
@@ -1027,6 +1029,66 @@ if (!list) {
         }
     }).catch(err => console.error("❌ Database Error:", err));
 }
+
+
+
+// --- NEW: UPLOAD MANAGER LOGIC ---
+    const loadUserUploads = (userId) => {
+        const uploadsListEl = document.getElementById('my-uploads-list');
+        if (!uploadsListEl) return;
+
+        // Listen for user's files
+        db.collection('resources').where('uploadedById', '==', userId)
+            .onSnapshot(snapshot => {
+                uploadsListEl.innerHTML = ''; 
+                if (snapshot.empty) {
+                    uploadsListEl.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-gray-500">No uploads yet.</td></tr>`;
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const dateStr = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : "Just now";
+                    
+                    // Icon logic
+                    let icon = '📄';
+                    if (data.fileType && data.fileType.startsWith('image/')) icon = '🖼️';
+                    else if (data.fileType === 'application/pdf') icon = '📕';
+
+                    const row = document.createElement('tr');
+                    row.className = "border-b border-gray-700 hover:bg-gray-750 transition";
+                    row.innerHTML = `
+                        <td class="py-3 px-4 flex items-center gap-3">
+                            <span class="text-xl">${icon}</span>
+                            <a href="${data.fileUrl}" target="_blank" class="font-medium text-white hover:text-cyan-400 truncate max-w-[150px]">${data.fileName}</a>
+                        </td>
+                        <td class="py-3 px-4 text-gray-400 text-xs uppercase">${data.fileType ? data.fileType.split('/')[1] : 'File'}</td>
+                        <td class="py-3 px-4 text-gray-400 whitespace-nowrap">${dateStr}</td>
+                        <td class="py-3 px-4 text-right space-x-2">
+                            <button class="edit-btn text-cyan-400 hover:text-white bg-gray-700 px-2 py-1 rounded text-xs" data-id="${doc.id}" data-name="${data.fileName}">✏️</button>
+                            <button class="delete-btn text-red-400 hover:text-white bg-gray-700 px-2 py-1 rounded text-xs" data-id="${doc.id}">🗑️</button>
+                        </td>
+                    `;
+                    uploadsListEl.appendChild(row);
+                });
+                
+                // Attach Button Listeners
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const newName = prompt("Enter new name:", btn.getAttribute('data-name'));
+                        if (newName && newName.trim()) {
+                            db.collection('resources').doc(btn.getAttribute('data-id')).update({ fileName: newName.trim() });
+                        }
+                    });
+                });
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (confirm("Delete this file permanently?")) {
+                            db.collection('resources').doc(btn.getAttribute('data-id')).delete();
+                        }
+                    });
+                });
+            });
+    };
 
     // --- Shared Logic ---
     const handleLogout = async (e) => {
