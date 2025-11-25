@@ -6,6 +6,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader');
     console.log("NavDisha Script Initialized.");
 
+
+    // --- HELPER: ACTIVITY LOGGER ---
+    const logActivity = async (userId, text) => {
+        try {
+            const userRef = db.collection('users').doc(userId);
+            const activityEntry = {
+                text: text,
+                timestamp: new Date().toISOString()
+            };
+            // Add to 'activityLog' array in Firestore
+            await userRef.update({
+                activityLog: firebase.firestore.FieldValue.arrayUnion(activityEntry)
+            });
+        } catch (error) {
+            console.error("Error logging activity:", error);
+        }
+    };
+
     // --- Config and Initialization ---
     if (typeof firebaseConfig === 'undefined') {
         console.error("CRITICAL: firebase-config.js is not loaded or firebaseConfig is not defined.");
@@ -238,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     // --- NEW AI SUGGESTION DISPLAY ---
-const displayAiSuggestion = (question, messageId) => {
+ const displayAiSuggestion = (question, messageId) => {
     const aiContainer = document.getElementById('ai-messages-container');
     if (!aiContainer) return;
 
@@ -273,45 +291,96 @@ const displayAiSuggestion = (question, messageId) => {
             `;
         }
     }, 3000);
-};
+ };
 
 
     // --- Function to populate the dashboard ---
+    // --- POPULATE DASHBOARD UI (Fixed: Streak + Score) ---
+   // --- POPULATE DASHBOARD UI (Safe Version) ---
     const populateDashboard = (userData) => {
         if (!userData) return;
-        document.getElementById('welcome-message').textContent = `Welcome back, ${userData.name || 'User'}!`;
-        document.getElementById('attendance-bar').style.width = `${userData.attendance || 0}%`;
-        document.getElementById('attendance-text').textContent = `${userData.attendance || 0}% Present`;
-        const ratingStars = document.getElementById('rating-stars');
-        let starsHtml = '';
-        for (let i = 1; i <= 5; i++) {
-            starsHtml += `<span class="${i <= (userData.rating || 0) ? 'text-yellow-400' : 'text-gray-600'}">★</span>`;
-        }
-        ratingStars.innerHTML = starsHtml;
-        document.getElementById('rating-text').textContent = `${(userData.rating || 0).toFixed(1)} / 5.0`;
-        document.getElementById('courses-learned-count').textContent = userData.coursesLearned || 0;
-        document.getElementById('courses-in-progress-count').textContent = userData.coursesInProgress || 0;
         
-        document.getElementById('questions-asked-count').textContent = userData.questionsAsked || 0;
-        const questionsList = document.getElementById('questions-history-list');
-        if (questionsList && userData.questions && Array.isArray(userData.questions)) {
-            const reversedQuestions = [...userData.questions].reverse();
-            if(reversedQuestions.length === 0){
-                questionsList.innerHTML = `<li><p class="text-gray-500">Aapne abhi tak koi sawaal nahi pucha hai.</p></li>`;
+        // Helper: Only set text if the element exists (Prevents Crash!)
+        const setText = (id, text) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
+        };
+
+        // 0. Welcome Message
+        setText('welcome-message', `Welcome back, ${userData.name || 'User'}!`);
+
+        // 1. DAILY STREAK
+        const streak = userData.streak || 0; 
+        setText('streak-count', streak);
+        
+        const lastActive = document.getElementById('last-active-text');
+        if (lastActive && userData.lastLoginDate) {
+            const today = new Date().toDateString();
+            lastActive.textContent = `Last active: ${userData.lastLoginDate === today ? 'Today' : userData.lastLoginDate}`;
+        }
+        
+        // 2. SCORE CARD
+        const questions = userData.questionsAsked || 0;
+        const score = (streak * 50) + (questions * 10);
+        setText('user-score', score);
+
+        const nextRank = Math.ceil((score + 1) / 1000) * 1000;
+        setText('next-rank-score', nextRank);
+
+        // 3. COURSES LEARNED
+        setText('courses-learned-count', userData.coursesLearned || 0);
+
+        // 4. DOWNLOAD HISTORY
+        const downloadsList = document.getElementById('downloads-list');
+        if (downloadsList) {
+            if (userData.downloadHistory && userData.downloadHistory.length > 0) {
+                downloadsList.innerHTML = [...userData.downloadHistory].reverse().slice(0, 5).map(item => `
+                    <li class="flex justify-between border-b border-gray-700 pb-1 last:border-0">
+                        <span class="truncate w-2/3 text-cyan-300" title="${item.fileName}">${item.fileName}</span>
+                        <span class="text-xs text-gray-500">${new Date(item.timestamp).toLocaleDateString()}</span>
+                    </li>
+                `).join('');
             } else {
-                 questionsList.innerHTML = reversedQuestions.map(q =>
-                    `<li>
-                        <a href="index.html#${q.messageId}" class="block p-2 rounded-md hover:bg-gray-700 transition truncate" title="${q.messageText}">
+                downloadsList.innerHTML = `<li class="text-gray-500 italic text-center pt-4">No downloads yet.</li>`;
+            }
+        }
+        
+        // 5. QUESTION HISTORY
+        setText('questions-asked-count', userData.questionsAsked || 0);
+        const questionsList = document.getElementById('questions-history-list');
+        
+        if (questionsList) {
+            if (userData.questions && Array.isArray(userData.questions) && userData.questions.length > 0) {
+                const reversedQuestions = [...userData.questions].reverse();
+                questionsList.innerHTML = reversedQuestions.map(q => `
+                    <li class="border-b border-gray-700 last:border-0">
+                        <a href="index.html#msg-${q.messageId}" class="block p-2 rounded-md hover:bg-gray-700 transition truncate" title="${q.messageText}">
                            → ${q.messageText}
                         </a>
                      </li>`
                 ).join('');
+            } else {
+                questionsList.innerHTML = `<li><p class="text-gray-500">No questions asked yet.</p></li>`;
             }
         }
 
-        const historyList = document.getElementById('history-list');
-        const history = userData.history || ['No activity yet.'];
-        historyList.innerHTML = history.map(item => `<li>${item}</li>`).join('');
+        // 6. ACTIVITY LOG
+        const activityList = document.getElementById('activity-list');
+        if (activityList) {
+            if (userData.activityLog && userData.activityLog.length > 0) {
+                activityList.innerHTML = [...userData.activityLog].reverse().slice(0, 10).map(act => `
+                    <li class="flex items-start gap-2 text-xs border-b border-gray-700 pb-2 last:border-0">
+                        <span class="text-cyan-500 mt-0.5">●</span>
+                        <div>
+                            <p class="text-gray-300">${act.text}</p>
+                            <span class="text-gray-600 text-[10px]">${new Date(act.timestamp).toLocaleString()}</span>
+                        </div>
+                    </li>
+                `).join('');
+            } else {
+                activityList.innerHTML = `<li class="text-gray-500 text-center">No recent activity.</li>`;
+            }
+        }
     };
 
     // --- Auth State Handler ---
@@ -326,6 +395,44 @@ const displayAiSuggestion = (question, messageId) => {
         }
 
         if (user) {
+
+          
+            // --- STREAK LOGIC START ---
+            const userRef = db.collection('users').doc(user.uid);
+            const docSnap = await userRef.get();
+            
+            if (docSnap.exists) {
+                const userData = docSnap.data();
+                const today = new Date().toDateString(); // e.g., "Mon Nov 25 2025"
+                const lastLogin = userData.lastLoginDate;
+                let newStreak = userData.streak || 0;
+                
+                // Only update if the date has changed (user hasn't logged in yet today)
+                if (lastLogin !== today) {
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    
+                    // Check if the last login was yesterday (Streak continues)
+                    if (lastLogin === yesterday.toDateString()) {
+                        newStreak++;
+                    } else {
+                        // Missed a day (Streak resets to 1)
+                        newStreak = 1;
+                    }
+                    
+                    // Save new streak and date to Firestore
+                    await userRef.update({
+                        lastLoginDate: today,
+                        streak: newStreak
+                    });
+                    
+                    // Log this action using our new helper
+                    logActivity(user.uid, "Logged in (Streak: " + newStreak + ")");
+                }
+            }
+            // --- STREAK LOGIC END ---
+
+            // ... (The rest of your existing code follows here) ...
             if (currentPath.includes('dashboard.html')) {
                 const docSnap = await db.collection('users').doc(user.uid).get();
                 if (docSnap.exists) populateDashboard(docSnap.data());
@@ -604,8 +711,8 @@ const displayAiSuggestion = (question, messageId) => {
     }
 
     // --- AI SUGGESTION LOGIC ---
-// --- AI BRAIN (Handles both Analysis & Direct Chat) ---
-const generateAiResponse = (questionText, isDirectChat = false) => {
+ // --- AI BRAIN (Handles both Analysis & Direct Chat) ---
+ const generateAiResponse = (questionText, isDirectChat = false) => {
     const aiContainer = document.getElementById('ai-messages-container');
     if (!aiContainer) return;
 
@@ -662,10 +769,10 @@ const generateAiResponse = (questionText, isDirectChat = false) => {
         aiContainer.scrollTop = aiContainer.scrollHeight;
 
     }, 1500);
-};
+ };
 
-// Alias for the old function name (so your old code still works)
-const triggerAiResponse = (text) => generateAiResponse(text, false);
+ // Alias for the old function name (so your old code still works)
+ const triggerAiResponse = (text) => generateAiResponse(text, false);
     // --- Forgot Password Logic ---
     const resetFormEl = document.getElementById('reset-form');
     const showResetFromLogin = document.getElementById('show-reset-from-login');
@@ -871,7 +978,7 @@ const triggerAiResponse = (text) => generateAiResponse(text, false);
     }
 
 
-
+    
   
 
     
@@ -996,9 +1103,9 @@ const triggerAiResponse = (text) => generateAiResponse(text, false);
                             </div>
                             
                             <div class="mt-4 flex gap-2">
-                                <a href="${finalDownloadUrl}" target="_blank" class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white text-center py-2 rounded-lg text-sm font-semibold transition shadow-lg cursor-pointer">
-                                    Download
-                                </a>
+                               <a href="${finalDownloadUrl}" target="_blank" class="track-download flex-1 bg-cyan-600 hover:bg-cyan-700 text-white text-center py-2 rounded-lg text-sm font-semibold transition shadow-lg cursor-pointer" data-filename="${data.fileName}">
+    Download
+</a>
                                 <a href="${data.fileUrl}" target="_blank" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white text-center py-2 rounded-lg text-sm font-medium transition border border-gray-600">
                                     Full View
                                 </a>
@@ -1015,10 +1122,10 @@ const triggerAiResponse = (text) => generateAiResponse(text, false);
         });
     }
     // Detective Script
-const list = document.getElementById('public-resources-list');
-if (!list) {
+ const list = document.getElementById('public-resources-list');
+ if (!list) {
     console.error("🚨 PROBLEM FOUND: I cannot find <div id='public-resources-list'> in your HTML. Please add it!");
-} else {
+ } else {
     console.log("✅ HTML ID found. Now checking Database...");
     db.collection('resources').get().then(snap => {
         console.log(`📊 Found ${snap.size} files in the database.`);
@@ -1028,11 +1135,11 @@ if (!list) {
             console.warn("⚠️ Database is empty! The Upload button is not saving data correctly.");
         }
     }).catch(err => console.error("❌ Database Error:", err));
-}
+ }
 
 
 
-// --- NEW: UPLOAD MANAGER LOGIC ---
+ // --- NEW: UPLOAD MANAGER LOGIC ---
     const loadUserUploads = (userId) => {
         const uploadsListEl = document.getElementById('my-uploads-list');
         if (!uploadsListEl) return;
@@ -1090,6 +1197,9 @@ if (!list) {
             });
     };
 
+
+    
+
     // --- Shared Logic ---
     const handleLogout = async (e) => {
         e.preventDefault();
@@ -1105,6 +1215,41 @@ if (!list) {
     };
     document.getElementById('mobile-menu-button')?.addEventListener('click', toggleNav);
     document.getElementById('nav-overlay')?.addEventListener('click', toggleNav);
+
+
+
+     // --- TRACK DOWNLOADS (Global Listener) ---
+    document.addEventListener('click', async (e) => {
+        // Check if the clicked element (or its parent) has the 'track-download' class
+        const btn = e.target.closest('.track-download');
+        
+        if (btn) {
+            const fileName = btn.getAttribute('data-filename');
+            const user = auth.currentUser;
+            
+            if (user && fileName) {
+                console.log("Tracking download:", fileName);
+                
+                // Add to User's Download History in Firestore
+                try {
+                    await db.collection('users').doc(user.uid).update({
+                        downloadHistory: firebase.firestore.FieldValue.arrayUnion({
+                            fileName: fileName,
+                            timestamp: new Date().toISOString()
+                        }),
+                        // Optional: Also log to Activity History
+                        activityLog: firebase.firestore.FieldValue.arrayUnion({
+                            text: `Downloaded: ${fileName}`,
+                            timestamp: new Date().toISOString()
+                        })
+                    });
+                } catch (error) {
+                    console.error("Error tracking download:", error);
+                }
+            }
+        }
+    });
+    
 });
 
 

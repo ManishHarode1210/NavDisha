@@ -63,28 +63,48 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Attendance Card -->
-                <div class="bg-gray-800 p-6 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Attendance</h3>
-                    <div class="w-full bg-gray-700 rounded-full h-4 mb-2">
-                        <div id="attendance-bar" class="bg-cyan-500 h-4 rounded-full" style="width: 0%;"></div>
-                    </div>
-                    <p id="attendance-text" class="text-right text-sm font-medium">0% Present</p>
-                </div>
+                 <div class="bg-gray-800 p-6 rounded-lg shadow-md hover:bg-gray-750 transition">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-cyan-400">Daily Streak</h3>
+            <span class="text-2xl">🔥</span>
+        </div>
+        <div class="flex items-end justify-between">
+            <div>
+                <p class="text-4xl font-bold text-white" id="streak-count">0</p>
+                <p class="text-sm text-gray-400">Days in a row</p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs text-gray-500" id="last-active-text">Last active: Today</p>
+            </div>
+        </div>
+    </div>
                 <!-- Rating Card -->
-                <div class="bg-gray-800 p-6 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold mb-2 text-cyan-400">Student Rating</h3>
-                    <div class="flex items-center">
-                        <div id="rating-stars" class="text-2xl">
-                            <!-- Stars will be inserted by JS -->
-                        </div>
-                        <p id="rating-text" class="ml-4 text-xl font-bold">0.0 / 5.0</p>
-                    </div>
-                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md hover:bg-gray-750 transition">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-cyan-400">My Score</h3>
+            <span class="text-2xl">🏆</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-4xl font-bold text-yellow-400" id="user-score">0</p>
+                <p class="text-sm text-gray-400">Total Points</p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm font-bold text-gray-300">Next Rank: <span id="next-rank-score" class="text-white">1000</span></p>
+                <p class="text-xs text-green-400 mt-1">Keep going!</p>
+            </div>
+        </div>
+    </div>
                 <!-- Courses Learned Card -->
-                <div class="bg-gray-800 p-6 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold mb-2 text-cyan-400">Courses Learned</h3>
-                    <p id="courses-learned-count" class="text-3xl font-bold">0</p>
-                </div>
+               <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-cyan-400">Download History</h3>
+            <span class="text-xl">📥</span>
+        </div>
+        <ul id="downloads-list" class="space-y-3 text-sm text-gray-300 h-32 overflow-y-auto pr-2">
+            <li class="text-gray-500 italic text-center pt-4">No downloads yet.</li>
+        </ul>
+    </div>
                 <!-- Courses In Progress Card -->
                 <div class="bg-gray-800 p-6 rounded-lg shadow-md">
                     <h3 class="text-lg font-semibold mb-2 text-cyan-400">Courses Continue</h3>
