@@ -1,59 +1,3 @@
-<<<<<<< HEAD
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-body {
-    font-family: 'Inter', sans-serif;
-}
-
-/* For Mobile Navigation Drawer */
-#nav-drawer, #nav-overlay {
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-#nav-drawer {
-    transform: translateX(-100%);
-}
-#nav-overlay {
-    opacity: 0;
-    pointer-events: none;
-}
-#nav-drawer.is-open {
-    transform: translateX(0);
-}
-#nav-overlay.is-open {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* Custom scrollbar for chat and question history */
-#messages-container::-webkit-scrollbar,
-#questions-history-list::-webkit-scrollbar {
-    width: 8px;
-}
-#messages-container::-webkit-scrollbar-track,
-#questions-history-list::-webkit-scrollbar-track {
-    background: #1f2937; /* bg-gray-800 */
-}
-#messages-container::-webkit-scrollbar-thumb,
-#questions-history-list::-webkit-scrollbar-thumb {
-    background: #374151; /* bg-gray-700 */
-    border-radius: 4px;
-}
-#messages-container::-webkit-scrollbar-thumb:hover,
-#questions-history-list::-webkit-scrollbar-thumb:hover {
-    background: #4b5563; /* bg-gray-600 */
-}
- 
-/* For highlighting a message when linked from the dashboard */
-.highlight-message {
-    background-color: rgba(6, 182, 212, 0.2);
-    border: 1px solid #06B6D4;
-    border-radius: 0.5rem;
-    transition: background-color 0.5s ease-in-out, border 0.5s ease-in-out;
-    padding: 4px;
-    margin: -4px;
-}
-
-=======
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 body {
@@ -120,4 +64,4 @@ body {
     border-radius: 0.5rem;
     transition: all 0.3s;
 }
->>>>>>> 98ad196 (Second commit - NavDisha)
+/* >>>>>>> 98ad196 (Second commit - NavDisha) */
