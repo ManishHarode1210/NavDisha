@@ -44,4 +44,15 @@ git commit
 git push origin main
 
 
-
+Third time i commited using these commands because the privious time the code is 
+duplicated in the file it self.
+that's why i re commmited it today.
+"Commands :- "
+ cd <folder>
+ git init
+ git add .
+ git  status
+ git remote -v
+ git remote add origin <the repo ink for push thhe code>
+ git commit -m "commite count - NavDisha"
+ git push origin main
